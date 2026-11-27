@@ -20,6 +20,7 @@ import {
   UsersRound,
   Gift,
   Trophy,
+  Star,
   Images,
   Settings,
   HelpCircle,
@@ -36,6 +37,7 @@ export type AdminView =
   | "financeiro"
   | "configuracoes"
   | "eventos"
+  | "avaliacoes"
   | "faq";
 
 interface NavItem {
@@ -53,6 +55,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "grupos", label: "Grupos", icon: UsersRound },
   { id: "fidelidade", label: "Fidelidade", icon: Gift },
   { id: "eventos", label: "Eventos", icon: Trophy },
+  { id: "avaliacoes", label: "Avaliações", icon: Star },
   { id: "financeiro", label: "Financeiro", icon: DollarSign },
   { id: "faq", label: "Perguntas Frequentes", icon: HelpCircle },
   { id: "configuracoes", label: "Configurações", icon: Settings },
