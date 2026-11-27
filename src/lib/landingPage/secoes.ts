@@ -133,36 +133,11 @@ export const SECOES_LANDING_PAGE: readonly SecaoLandingPage[] = [
  */
 export const PLACEHOLDERS_SECOES: readonly PlaceholderSecao[] = [
   {
-    secaoId: SECAO_IDS.FIDELIDADE,
-    itensPlanejados: [
-      "Passo a passo de \"Como Funciona\" o acúmulo de pontos",
-      "Exemplos de recompensas reais disponíveis",
-      "CTA \"Crie sua Conta e Comece a Pontuar\"",
-    ],
-  },
-  {
     secaoId: SECAO_IDS.INSTAGRAM,
     itensPlanejados: [
       "Grid com os posts e reels mais recentes",
       "Clique leva à postagem original",
       "Botão \"Siga nosso Instagram\"",
-    ],
-  },
-  {
-    secaoId: SECAO_IDS.FAQ,
-    itensPlanejados: [
-      "Perguntas em formato sanfona (accordion)",
-      "Política de chuva e de cancelamento",
-      "Regras de vestimenta e calçados",
-      "Gestão das perguntas pelo Painel Admin",
-    ],
-  },
-  {
-    secaoId: SECAO_IDS.CONTATO,
-    itensPlanejados: [
-      "Mapa interativo do Google Maps",
-      "Horários de funcionamento sincronizados com o sistema",
-      "Atalhos para WhatsApp, telefone e e-mail",
     ],
   },
 ];

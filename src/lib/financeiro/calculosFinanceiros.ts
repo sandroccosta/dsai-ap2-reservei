@@ -4,6 +4,7 @@
  */
 import { QUADRAS } from "@/lib/quadras";
 import type { TipoReserva } from "@/lib/recorrencia/types";
+import { reservaOcupaHorario } from "@/lib/reservas/garantiaHorario";
 import type { Reserva, StatusReserva } from "@/store/useReservasStore";
 
 export interface ResumoFinanceiro {
@@ -63,11 +64,14 @@ function chavesHorarios(reservas: Reserva[]): Set<string> {
 /**
  * Percentual inteiro de horários ocupados no dia.
  * Capacidade = quadras × horários − horários bloqueados. Cada quadra + horário conta uma vez.
+ * Ocupa o horário quem `reservaOcupaHorario` diz que ocupa: a provisória ainda no prazo
+ * conta (segura o horário); a vencida e a cancelada não.
  */
 export function calcularTaxaOcupacao(
   reservasDoDia: Reserva[],
   totalQuadras: number,
-  totalHorarios: number
+  totalHorarios: number,
+  agora: Date
 ): number {
   const bloqueados = chavesHorarios(
     reservasDoDia.filter((r) => r.status !== "cancelada" && r.tipoReserva === "manutencao_bloqueio")
@@ -75,7 +79,10 @@ export function calcularTaxaOcupacao(
   const capacidade = totalQuadras * totalHorarios - bloqueados.size;
   if (capacidade <= 0) return 0;
 
-  const ocupados = [...chavesHorarios(filtrarReservasFinanceiras(reservasDoDia))].filter(
+  const quemOcupa = reservasDoDia.filter(
+    (r) => r.tipoReserva !== "manutencao_bloqueio" && reservaOcupaHorario(r, agora)
+  );
+  const ocupados = [...chavesHorarios(quemOcupa)].filter(
     (chave) => !bloqueados.has(chave)
   ).length;
   return Math.min(100, Math.round((ocupados / capacidade) * 100));

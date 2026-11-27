@@ -44,6 +44,16 @@ vi.mock("@/hooks/useFidelidadeService", () => ({
     resgatarVoucher: vi.fn(),
   }),
 }));
+vi.mock("@/hooks/useConfiguracoesComplexo", async () => {
+  const { CONFIGURACOES_PADRAO } = await import("@/lib/configuracoes/configuracoesComplexo");
+  return {
+    useConfiguracoesComplexo: () => ({
+      configuracoes: { ...CONFIGURACOES_PADRAO, nomeComplexo: "Arena Belém", whatsapp: "5591988887777" },
+      carregando: false,
+      salvar: vi.fn(),
+    }),
+  };
+});
 vi.mock("@/components/fidelidade/CartelaFidelidadeTimeline", () => ({ CartelaFidelidadeTimeline: () => null }));
 vi.mock("@/components/vagas/ModalGerenciarVagas", () => ({ ModalGerenciarVagas: () => null }));
 const avaliacoes = vi.hoisted(() => ({ porReserva: {} as Record<string, unknown>, salvar: vi.fn() }));
@@ -132,6 +142,19 @@ describe("Minha Conta - cancelamento com 24 horas de antecedência", () => {
     expect(screen.getByText("#contrato")).toBeInTheDocument();
     expect(screen.queryByRole("button", { name: /Cancelar Reserva/ })).not.toBeInTheDocument();
     expect(screen.getByText(/contrato recorrente/)).toBeInTheDocument();
+  });
+
+  it("usa o WhatsApp e o nome do complexo das configurações", () => {
+    reservasMock = [reserva("perto0002", "2026-11-20", "09:00")];
+    render(<MinhaContaPage />);
+
+    const linkDoNumeroConfigurado = /^https:\/\/wa\.me\/5591988887777\?/;
+    expect(screen.getByRole("link", { name: /Falar com o complexo/ })).toHaveAttribute("href", expect.stringMatching(linkDoNumeroConfigurado));
+    expect(screen.getByTitle("Falar com o suporte no WhatsApp")).toHaveAttribute("href", expect.stringMatching(linkDoNumeroConfigurado));
+
+    fireEvent.click(screen.getByRole("button", { name: /Fale Conosco/ }));
+    expect(screen.getByText("Arena Belém")).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /Abrir Conversa no WhatsApp/ })).toHaveAttribute("href", expect.stringMatching(linkDoNumeroConfigurado));
   });
 });
 

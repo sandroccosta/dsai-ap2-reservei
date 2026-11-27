@@ -23,6 +23,17 @@ vi.mock("@/lib/supabase/authService", () => ({
   isTelefoneBloqueado: vi.fn().mockResolvedValue(false),
 }));
 
+vi.mock("@/hooks/useConfiguracoesComplexo", async () => {
+  const { CONFIGURACOES_PADRAO } = await import("@/lib/configuracoes/configuracoesComplexo");
+  return {
+    useConfiguracoesComplexo: () => ({
+      configuracoes: { ...CONFIGURACOES_PADRAO, endereco: "Av. Nazaré, 10 – Belém" },
+      carregando: false,
+      salvar: vi.fn(),
+    }),
+  };
+});
+
 vi.mock("sonner", () => ({
   toast: { error: vi.fn(), success: vi.fn() },
 }));
@@ -70,5 +81,11 @@ describe("FormularioIdentificacao - confirmação dos dados", () => {
 
     await waitFor(() => expect(screen.getByText("Informe seu nome completo.")).toBeTruthy());
     expect(onConfirmar).not.toHaveBeenCalled();
+  });
+
+  it("mostra o endereço do complexo das configurações", () => {
+    // Spec: SPEC/2026-11-27-configuracoes-complexo.md
+    renderFormulario();
+    expect(screen.getByText("Av. Nazaré, 10 – Belém")).toBeInTheDocument();
   });
 });

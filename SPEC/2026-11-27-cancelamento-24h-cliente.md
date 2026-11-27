@@ -25,7 +25,7 @@ O cliente só cancela uma reserva pelo site com pelo menos 24 horas de antecedê
    - Quando não permite, aparece o motivo e o link "Falar com o complexo" para o WhatsApp, montado com `montarLinkWhatsApp` (`src/lib/landingPage/navegacao.ts`), com uma mensagem citando a data e o horário da reserva. O número continua vindo de `TELEFONE_COMPLEXO` até a JN-04 (configurações do complexo).
    - O modal de cancelamento mostra o texto da política.
    - **Revalidação na confirmação**: ao clicar em "Confirmar Cancelamento", a regra é avaliada de novo com a hora atual. Se não for mais permitido (o modal ficou aberto e passou do limite), a reserva não é cancelada, o modal fecha e um toast de erro mostra o motivo.
-3. **Garantia só na tela**: a regra vale na interface. A garantia no banco (a RLS impedir que o cliente cancele com menos de 24h) virá com o endurecimento de RLS do Alexsandro; até lá, uma chamada direta à API ainda conseguiria cancelar.
+3. **Garantia só na tela**: a RLS já impede um cliente de cancelar a reserva de outro, mas a regra das 24h vale só na interface; uma chamada direta à API ainda conseguiria cancelar com menos de 24h. Aplicá-la no banco fica como pendência para o Alexsandro, dono do trigger de reservas.
 
 ## Casos de borda
 - 25h antes: permitido.
@@ -46,4 +46,5 @@ O cliente só cancela uma reserva pelo site com pelo menos 24 horas de antecedê
 ## Fora do escopo
 - Reembolso ou qualquer movimentação financeira.
 - Cancelamento pelo admin (continua sem restrição).
-- Garantia da regra no banco (RLS do Alexsandro).
+- Regra das 24h no banco, calculada no fuso do complexo (`America/Sao_Paulo`), no trigger de reservas do Alexsandro (registrado no `BACKLOG.md`).
+- Erro ao gravar o cancelamento não chega ao cliente: `cancelarReserva` em `useReservasService.ts` (arquivo do Alexsandro) não espera o banco (registrado no `BACKLOG.md`).

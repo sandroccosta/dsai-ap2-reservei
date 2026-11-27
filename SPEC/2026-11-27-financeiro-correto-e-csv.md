@@ -15,7 +15,7 @@ O painel financeiro e o dashboard do admin mostram valores que batem com as regr
    - `filtrarReservasFinanceiras(reservas)`: exclui `cancelada`, `em_processamento` e `tipoReserva === "manutencao_bloqueio"`.
    - `valorBrutoReserva(reserva)`: `valorOriginal` quando positivo; senão `valorTotal + descontoFidelidade`. Valores inválidos contam 0.
    - `calcularResumoFinanceiro(reservas)`: aplica o filtro e devolve `recebido` (soma de `valorSinal`), `aReceberNoLocal` (soma de `valorPendente`), `previsto` (soma de `valorTotal`), `brutoTabela` e `descontosFidelidade`. As reservas válidas são `pendente` e `confirmada`. Na quitação no balcão e no pagamento integral o código já grava `valorSinal = valorTotal` e `valorPendente = 0`, então nada é contado em dobro.
-   - `calcularTaxaOcupacao(reservasDoDia, totalQuadras, totalHorarios)`: capacidade = quadras × horários − horários bloqueados; ocupados = horários distintos (quadra + horário) das reservas válidas que não estão bloqueados; percentual inteiro, limitado a 100; capacidade zero devolve 0.
+   - `calcularTaxaOcupacao(reservasDoDia, totalQuadras, totalHorarios, agora)`: capacidade = quadras × horários − horários bloqueados; ocupados = horários distintos (quadra + horário), fora dos bloqueados, das reservas que ocupam o horário segundo `reservaOcupaHorario` (`src/lib/reservas/garantiaHorario.ts`, reutilizada): a provisória ainda no prazo ocupa, a vencida e a cancelada não; percentual inteiro, limitado a 100; capacidade zero devolve 0. *(Revisado em 27/11 pelo planejamento atualizado da tarefa: antes, toda provisória ficava fora da ocupação.)*
    - `gerarCsvReservas(reservas)` e `nomeArquivoCsvFinanceiro(dataISO)`.
 2. **`useReservasService.ts` não é alterado** (arquivo do Alexsandro). O `financeiro` do hook continua existindo, mas as telas do admin passam a usar as regras puras.
 3. **CSV**:
@@ -29,12 +29,12 @@ O painel financeiro e o dashboard do admin mostram valores que batem com as regr
    - KPIs pelo `calcularResumoFinanceiro`; gráfico de 7 dias, totais por quadra e lista de auditoria partem de `filtrarReservasFinanceiras` e usam `valorBrutoReserva`.
    - Botão **"Exportar CSV"** exporta a lista **atualmente filtrada** na tela (filtro de tipo e busca), com nome `reservei-financeiro-AAAA-MM-DD.csv` (data local de hoje). Download por `Blob` + `URL.createObjectURL`, liberando a URL depois.
    - Lista vazia: botão desabilitado, com a dica "Nenhuma reserva na lista para exportar".
-5. **`AdminDashboardPage.tsx`**: ocupação por `calcularTaxaOcupacao(reservasHoje, QUADRAS.length, HORARIOS_DISPONIVEIS.length)`; sinais recebidos e pendente no local pelo `calcularResumoFinanceiro(reservasHoje)`.
+5. **`AdminDashboardPage.tsx`**: ocupação por `calcularTaxaOcupacao(reservasHoje, QUADRAS.length, HORARIOS_DISPONIVEIS.length, new Date())`; sinais recebidos e pendente no local pelo `calcularResumoFinanceiro(reservasHoje)`.
 
 ## Casos de borda
 - Reserva `pendente` com sinal: entra no recebido e o saldo entra no "a receber".
 - Bloqueio: fora do recebido, previsto, bruto, gráfico, lista e CSV; reduz a capacidade da ocupação.
-- Reserva `em_processamento`: fora de tudo, inclusive da ocupação (a reserva provisória expira em 10 minutos).
+- Reserva `em_processamento`: fora dos valores, da lista e do CSV. Na ocupação, conta enquanto está no prazo (segura o horário) e deixa de contar quando vence (10 minutos).
 - Escolinha com `valorTotal = 0`: não soma dinheiro, mas ocupa horário.
 - Dois registros no mesmo horário e quadra: o horário conta uma vez.
 - Todas as quadras bloqueadas o dia inteiro: capacidade zero, ocupação 0%.
@@ -56,3 +56,5 @@ O painel financeiro e o dashboard do admin mostram valores que batem com as regr
 - Alterar o `financeiro` de `useReservasService.ts`.
 - Exportar em outros formatos (XLSX, PDF) ou filtrar por período.
 - Conciliação com pagamentos reais (o Pix é simulado).
+- Remover ou corrigir o `financeiro` antigo de `useReservasService.ts`, que ficou sem uso (arquivo do Alexsandro; registrado no `BACKLOG.md`).
+- Card "Reservas hoje" do dashboard, que ainda conta bloqueios e provisórias (registrado no `BACKLOG.md`).

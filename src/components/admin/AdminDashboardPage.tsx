@@ -72,7 +72,7 @@ export function AdminDashboardPage() {
       totalReservas: reservasHoje.length,
       totalSinaisRecebidos: resumo.recebido,
       totalPendenteNoLocal: resumo.aReceberNoLocal,
-      taxaOcupacao: calcularTaxaOcupacao(reservasHoje, QUADRAS.length, HORARIOS_DISPONIVEIS.length),
+      taxaOcupacao: calcularTaxaOcupacao(reservasHoje, QUADRAS.length, HORARIOS_DISPONIVEIS.length, new Date()),
     };
   }, [reservasHoje]);
 

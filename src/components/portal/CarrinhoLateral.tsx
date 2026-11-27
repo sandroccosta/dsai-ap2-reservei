@@ -7,8 +7,8 @@ import {
   formatarMoeda,
   formatarDataExibicao,
   PERCENTUAL_SINAL,
-  ENDERECO_COMPLEXO,
 } from "@/lib/constants";
+import { useConfiguracoesComplexo } from "@/hooks/useConfiguracoesComplexo";
 import { QUADRAS } from "@/lib/quadras";
 import { ShoppingCart, MapPin, Calendar, Clock, Trash2, Gift, Ticket, Check, X } from "lucide-react";
 import type { VoucherFidelidade } from "@/lib/fidelidade/types";
@@ -56,6 +56,7 @@ export function CarrinhoLateral({
   voucherAplicado,
   onSelecionarVoucher,
 }: Props) {
+  const { configuracoes } = useConfiguracoesComplexo();
   const quadra = QUADRAS.find((q) => q.id === quadraId);
   const temItens = (horariosSelecionados ?? []).length > 0;
 
@@ -113,7 +114,7 @@ export function CarrinhoLateral({
               <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
               <div>
                 <p className="text-xs text-slate-500 font-medium">Local</p>
-                <p className="text-sm text-slate-200">{ENDERECO_COMPLEXO}</p>
+                <p className="text-sm text-slate-200">{configuracoes.endereco}</p>
                 {quadra && (
                   <p className="text-xs text-emerald-400 font-semibold mt-0.5">
                     Quadra {quadra.numero}

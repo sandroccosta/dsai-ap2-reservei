@@ -182,6 +182,31 @@ export async function fetchCampanhaSupabase(): Promise<CampanhaFidelidade> {
 }
 
 /**
+ * Campanha para a landing, **sem** filtrar por `ativo`: com o programa desligado,
+ * volta `ativo: false` (e a seção some) em vez de cair na campanha padrão.
+ * Tabela vazia devolve `null`; falha devolve a campanha local, sem erro ao visitante.
+ * Spec: SPEC/2026-11-27-secao-fidelidade-landing.md
+ */
+export async function obterCampanhaLanding(): Promise<CampanhaFidelidade | null> {
+  const local = lerLocalStorage<CampanhaFidelidade>(STORAGE_CAMPANHA_KEY, CAMPANHA_PADRAO);
+  if (!isSupabaseConfigured()) return local;
+
+  try {
+    const { data, error } = await supabase
+      .from(TABELA_CAMPANHA)
+      .select("*")
+      .order("atualizado_em", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    if (error) throw error;
+    return data ? rowToCampanha(data as CampanhaDbRow) : null;
+  } catch (err) {
+    console.warn("[FidelidadeService] Campanha da landing indisponível; usando a local:", err);
+    return local;
+  }
+}
+
+/**
  * Salva a configuração da campanha de fidelidade (Admin).
  */
 export async function salvarCampanhaSupabase(

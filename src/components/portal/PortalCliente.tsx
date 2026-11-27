@@ -18,6 +18,9 @@ import { LandingSecoesPlaceholder } from "@/components/landing/LandingSecoesPlac
 import { SecaoEstrutura } from "@/components/landing/SecaoEstrutura";
 import { SecaoEscolinhas } from "@/components/landing/SecaoEscolinhas";
 import { SecaoEventos } from "@/components/landing/SecaoEventos";
+import { SecaoContato } from "@/components/landing/SecaoContato";
+import { SecaoFaq } from "@/components/landing/SecaoFaq";
+import { SecaoFidelidade } from "@/components/landing/SecaoFidelidade";
 import { SecaoAvaliacoes } from "@/components/landing/SecaoAvaliacoes";
 import { CabecalhoReserva, ID_TITULO_RESERVA } from "@/components/landing/CabecalhoReserva";
 import { BotaoVoltarAoTopo } from "@/components/landing/BotaoVoltarAoTopo";
@@ -28,6 +31,9 @@ import { useReservasService } from "@/hooks/useReservasService";
 import { useContratosService } from "@/hooks/useContratosService";
 import { useUserAuth } from "@/hooks/useUserAuth";
 import { useFidelidadeService } from "@/hooks/useFidelidadeService";
+import { useConfiguracoesComplexo } from "@/hooks/useConfiguracoesComplexo";
+import { paraConfiguracaoSite } from "@/lib/configuracoes/configuracoesComplexo";
+import { montarLinkWhatsApp } from "@/lib/landingPage/navegacao";
 import type { VoucherFidelidade } from "@/lib/fidelidade/types";
 import { aplicarDescontoVouchers } from "@/lib/fidelidade/fidelidadeService";
 import { isTelefoneBloqueado } from "@/lib/supabase/authService";
@@ -61,6 +67,7 @@ export function PortalCliente() {
 
   // ── Autenticação de Usuário & Fidelidade ──────────────────────────────────
   const { user, isAutenticado } = useUserAuth();
+  const { configuracoes } = useConfiguracoesComplexo();
   const { progresso, consumirVouchersNoCheckout } = useFidelidadeService();
   const [mostrarModalPosCadastro, setMostrarModalPosCadastro] = useState(false);
   const [dadosUltimaReserva, setDadosUltimaReserva] = useState<{
@@ -458,7 +465,12 @@ export function PortalCliente() {
                   </div>
                 </div>
                 <a
-                  href={`https://wa.me/5500000000000?text=${encodeURIComponent("Olá, gostaria de entender o motivo do bloqueio da minha conta no Reservei.")}`}
+                  href={
+                    montarLinkWhatsApp(
+                      configuracoes.whatsapp,
+                      "Olá, gostaria de entender o motivo do bloqueio da minha conta no Reservei."
+                    ) ?? undefined
+                  }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-red-500/20 hover:bg-red-500/30 text-red-200 border border-red-500/40 font-bold text-xs flex items-center justify-center gap-2 whitespace-nowrap transition-colors"
@@ -535,11 +547,17 @@ export function PortalCliente() {
 
         {/* ── Seções institucionais futuras (placeholders das próximas specs) ── */}
         <LandingSecoesPlaceholder
-          implementadas={{ [SECAO_IDS.EVENTOS]: <SecaoEventos />, [SECAO_IDS.AVALIACOES]: <SecaoAvaliacoes /> }}
+          implementadas={{
+            [SECAO_IDS.FIDELIDADE]: <SecaoFidelidade />,
+            [SECAO_IDS.EVENTOS]: <SecaoEventos />,
+            [SECAO_IDS.AVALIACOES]: <SecaoAvaliacoes />,
+            [SECAO_IDS.FAQ]: <SecaoFaq />,
+            [SECAO_IDS.CONTATO]: <SecaoContato />,
+          }}
         />
 
         {/* ── Rodapé ─────────────────────────────────────────────────── */}
-        <LandingFooter />
+        <LandingFooter config={paraConfiguracaoSite(configuracoes)} />
 
         {/* Botão flutuante carrinho (mobile) */}
         <BotaoCarrinhoMobile

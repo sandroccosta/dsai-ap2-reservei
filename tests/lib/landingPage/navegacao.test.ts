@@ -52,7 +52,9 @@ describe("landingPage/navegacao - getSecaoPorId / getPlaceholderDaSecao", () => 
   });
 
   it("retorna os itens planejados de uma seção futura", () => {
-    const placeholder = getPlaceholderDaSecao("fidelidade");
+    const placeholder = getPlaceholderDaSecao("fidelidade", [
+      { secaoId: "fidelidade", itensPlanejados: ["Passo a passo do programa"] },
+    ]);
     expect(placeholder).not.toBeNull();
     expect(placeholder?.itensPlanejados.length).toBeGreaterThan(0);
   });

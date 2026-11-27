@@ -94,31 +94,40 @@ describe("calcularResumoFinanceiro", () => {
 });
 
 describe("calcularTaxaOcupacao", () => {
+  const AGORA = new Date("2026-11-20T12:00:00Z");
+
   it("divide os horários ocupados pela capacidade de quadras × horários", () => {
     const dia = [reserva({ horarios: ["18:00", "19:00", "20:00"] }), reserva({ quadraId: "q2", horarios: ["10:00"] })];
     // 4 de 42 horários = 9,5%
-    expect(calcularTaxaOcupacao(dia, 3, 14)).toBe(10);
+    expect(calcularTaxaOcupacao(dia, 3, 14, AGORA)).toBe(10);
   });
 
   it("desconta os horários bloqueados da capacidade e não conta o bloqueio como ocupação", () => {
     const dia = [bloqueio, reserva({ quadraId: "q1", horarios: ["10:00", "11:00"] })];
     // capacidade 1 × 4 − 2 bloqueados = 2; ocupados 2
-    expect(calcularTaxaOcupacao(dia, 1, 4)).toBe(100);
+    expect(calcularTaxaOcupacao(dia, 1, 4, AGORA)).toBe(100);
   });
 
-  it("ignora provisórias e canceladas e conta uma vez o mesmo horário", () => {
+  it("ignora canceladas e conta uma vez o mesmo horário", () => {
     const dia = [
       reserva({ id: "x", horarios: ["18:00"] }),
       reserva({ id: "y", horarios: ["18:00"], tipoReserva: "escolinha", valorTotal: 0 }),
-      reserva({ id: "p", horarios: ["19:00"], status: "em_processamento" }),
       reserva({ id: "c", horarios: ["20:00"], status: "cancelada" }),
     ];
-    expect(calcularTaxaOcupacao(dia, 1, 10)).toBe(10);
+    expect(calcularTaxaOcupacao(dia, 1, 10, AGORA)).toBe(10);
+  });
+
+  it("conta a provisória ainda no prazo, que segura o horário, e ignora a vencida", () => {
+    const dia = [
+      reserva({ id: "no_prazo", horarios: ["18:00"], status: "em_processamento", expiraEm: "2026-11-20T12:05:00Z" }),
+      reserva({ id: "vencida", horarios: ["19:00"], status: "em_processamento", expiraEm: "2026-11-20T11:55:00Z" }),
+    ];
+    expect(calcularTaxaOcupacao(dia, 1, 10, AGORA)).toBe(10);
   });
 
   it("devolve 0 quando a capacidade é zero", () => {
-    expect(calcularTaxaOcupacao([bloqueio], 1, 2)).toBe(0);
-    expect(calcularTaxaOcupacao([], 0, 14)).toBe(0);
+    expect(calcularTaxaOcupacao([bloqueio], 1, 2, AGORA)).toBe(0);
+    expect(calcularTaxaOcupacao([], 0, 14, AGORA)).toBe(0);
   });
 });
 

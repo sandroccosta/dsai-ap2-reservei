@@ -19,3 +19,24 @@ commits = [
   "28c16e711e0fc04f00a73b38d347e771dd5ce960",
   "3d55f8fd696708be69c171d606cdbc5bbd6bdcbb",
 ]
+
+# Falsos positivos nas sessões salvas do Claude Code (prompts/sessoes/*.jsonl).
+# As exceções NÃO usam `paths`: no gitleaks 8.30 uma exceção com `paths` ignora o
+# arquivo inteiro, e um segredo de verdade colado numa sessão passaria. Cada uma
+# vale só para o formato exato do valor, em qualquer arquivo.
+
+# Cada requisição registra a lista pública de recursos beta da API
+# ("oauth-2025-04-20","interleaved-thinking-2025-05-14"...). A regra
+# generic-api-key lê "auth"/"token" no item anterior como nome de chave.
+# Valor só com palavras minúsculas e uma data no fim nunca é credencial.
+[[allowlists]]
+description = "Nomes públicos de recursos beta da API (nome-AAAA-MM-DD)"
+regexes = ['''^[a-z]+(?:-[a-z]+)*-20\d{2}-\d{2}-\d{2}$''']
+
+# Cada turno salvo tem "turnAttributionKey", um UUID aleatório que identifica o
+# turno (não é credencial). A regra acusa pelo "Key" no nome do campo. A
+# exceção olha o trecho inteiro: só esse campo seguido de um UUID.
+[[allowlists]]
+description = "Identificador de turno (UUID) nas sessões do Claude Code"
+regexTarget = "match"
+regexes = ['''turnAttributionKey"\s*:\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"''']

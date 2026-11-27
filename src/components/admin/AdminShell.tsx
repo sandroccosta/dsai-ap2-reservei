@@ -18,7 +18,9 @@ import { AdminEscolinhasPage } from "./AdminEscolinhasPage";
 import { AdminGruposPage } from "./AdminGruposPage";
 import { AdminFidelidadePage } from "./AdminFidelidadePage";
 import { AdminInstitucionalPage } from "./AdminInstitucionalPage";
+import { AdminConfiguracoesPage } from "./AdminConfiguracoesPage";
 import { AdminEventosPage } from "./AdminEventosPage";
+import { AdminFaqPage } from "./AdminFaqPage";
 import { AdminAvaliacoesPage } from "./AdminAvaliacoesPage";
 
 // Placeholder pages para futuras specs
@@ -94,7 +96,9 @@ export function AdminShell({ initialView = "dashboard" }: Props) {
           {view === "escolinhas" && <AdminEscolinhasPage />}
           {view === "grupos" && <AdminGruposPage />}
           {view === "fidelidade" && <AdminFidelidadePage />}
+          {view === "configuracoes" && <AdminConfiguracoesPage />}
           {view === "eventos" && <AdminEventosPage />}
+          {view === "faq" && <AdminFaqPage />}
           {view === "avaliacoes" && <AdminAvaliacoesPage />}
         </div>
       </main>
