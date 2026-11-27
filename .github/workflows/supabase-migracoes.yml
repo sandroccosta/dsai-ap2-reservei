@@ -32,9 +32,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Versão fixa: "latest" consulta a API do GitHub sem autenticação a cada
+      # execução e falha quando o limite de consultas dos runners estoura.
+      # Para atualizar, troque o número e confira o workflow verde no PR.
       - uses: supabase/setup-cli@v1
         with:
-          version: latest
+          version: 3.4.0
 
       # Aplica todas as migrações num banco vazio. Storage e Realtime ficam ligados
       # porque a migração base cria bucket, policies de storage e publicação Realtime.
