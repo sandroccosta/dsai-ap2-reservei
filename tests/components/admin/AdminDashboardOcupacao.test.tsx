@@ -28,7 +28,7 @@ function valorDoCard(id: string): string {
 }
 
 describe("AdminDashboardPage - taxa de ocupação", () => {
-  it("usa 3 quadras × 14 horários, desconta o bloqueio e ignora a reserva provisória", () => {
+  it("usa 3 quadras × 14 horários, desconta o bloqueio e ignora a reserva provisória vencida", () => {
     const hoje = getHoje();
     reservasMock = [
       reserva({
@@ -40,7 +40,10 @@ describe("AdminDashboardPage - taxa de ocupação", () => {
         id: "r1", data: hoje, quadraId: "q2", horarios: ["18:00", "19:00", "20:00"],
         valorTotal: 330, valorSinal: 132, valorPendente: 198,
       }),
-      reserva({ id: "proc", data: hoje, quadraId: "q3", horarios: ["10:00"], status: "em_processamento" }),
+      reserva({
+        id: "proc", data: hoje, quadraId: "q3", horarios: ["10:00"], status: "em_processamento",
+        expiraEm: "2000-01-01T00:00:00Z",
+      }),
     ];
 
     render(<AdminDashboardPage />);
