@@ -19,3 +19,15 @@ commits = [
   "28c16e711e0fc04f00a73b38d347e771dd5ce960",
   "3d55f8fd696708be69c171d606cdbc5bbd6bdcbb",
 ]
+
+# Falso positivo nas sessões salvas do Claude Code: cada requisição registra a
+# lista pública de recursos beta da API ("claude-code-20250219",
+# "oauth-2025-04-20", "interleaved-thinking-2025-05-14"...). A regra
+# generic-api-key lê "oauth" como nome de chave e o item seguinte como valor.
+# A exceção exige as duas condições: arquivo de sessão E valor no formato
+# nome-AAAA-MM-DD. Qualquer outro segredo nas sessões continua sendo acusado.
+[[allowlists]]
+description = "Nomes públicos de recursos beta da API nas sessões do Claude Code"
+condition = "AND"
+paths = ['''^prompts/sessoes/.+\.jsonl$''']
+regexes = ['''^[a-z]+(-[a-z]+)*-20\d{2}-\d{2}-\d{2}$''']
