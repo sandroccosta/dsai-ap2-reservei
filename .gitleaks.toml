@@ -31,3 +31,14 @@ description = "Nomes públicos de recursos beta da API nas sessões do Claude Co
 condition = "AND"
 paths = ['''^prompts/sessoes/.+\.jsonl$''']
 regexes = ['''^[a-z]+(-[a-z]+)*-20\d{2}-\d{2}-\d{2}$''']
+
+# Mesmo caso: cada turno salvo tem "turnAttributionKey", um UUID aleatório que o
+# Claude Code usa para identificar o turno (não é credencial). A regra
+# generic-api-key acusa pelo "Key" no nome do campo. A exceção vale só nos
+# arquivos de sessão e só quando o trecho acusado é esse campo com um UUID.
+[[allowlists]]
+description = "Identificador de turno (UUID) nas sessões do Claude Code"
+condition = "AND"
+paths = ['''^prompts/sessoes/.+\.jsonl$''']
+regexTarget = "match"
+regexes = ['''turnAttributionKey"\s*:\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"''']
