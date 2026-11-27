@@ -20,6 +20,7 @@ import {
   UsersRound,
   Gift,
   Images,
+  Settings,
 } from "lucide-react";
 
 export type AdminView =
@@ -30,7 +31,8 @@ export type AdminView =
   | "escolinhas"
   | "grupos"
   | "fidelidade"
-  | "financeiro";
+  | "financeiro"
+  | "configuracoes";
 
 interface NavItem {
   id: AdminView;
@@ -47,6 +49,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "grupos", label: "Grupos", icon: UsersRound },
   { id: "fidelidade", label: "Fidelidade", icon: Gift },
   { id: "financeiro", label: "Financeiro", icon: DollarSign },
+  { id: "configuracoes", label: "Configurações", icon: Settings },
 ];
 
 interface Props {
