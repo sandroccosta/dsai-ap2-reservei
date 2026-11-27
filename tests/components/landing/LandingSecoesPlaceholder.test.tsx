@@ -6,6 +6,12 @@ import { CabecalhoReserva, ID_TITULO_RESERVA } from "@/components/landing/Cabeca
 import { PLACEHOLDERS_SECOES, SECOES_LANDING_PAGE } from "@/lib/landingPage/secoes";
 import type { PlaceholderSecao } from "@/lib/landingPage/types";
 
+// Lista fixa: os testes não dependem de quais seções ainda estão em construção.
+const PLACEHOLDERS_TESTE: PlaceholderSecao[] = [
+  { secaoId: "fidelidade", itensPlanejados: ["Passo a passo do programa"] },
+  { secaoId: "instagram", itensPlanejados: ["Grid de posts"] },
+];
+
 describe("LandingSecoesPlaceholder - Componente", () => {
   it("renderiza uma seção para cada área futura, na ordem do catálogo", () => {
     const { container } = render(<LandingSecoesPlaceholder />);
@@ -42,25 +48,25 @@ describe("LandingSecoesPlaceholder - Componente", () => {
   });
 
   it("exibe a seção de Fidelidade com destaque do programa", () => {
-    render(<LandingSecoesPlaceholder />);
+    render(<LandingSecoesPlaceholder placeholders={PLACEHOLDERS_TESTE} />);
     expect(screen.getByRole("heading", { level: 2, name: "Programa de Fidelidade" })).toBeInTheDocument();
   });
 
   it("referencia a spec responsável em cada placeholder", () => {
-    render(<LandingSecoesPlaceholder />);
+    render(<LandingSecoesPlaceholder placeholders={PLACEHOLDERS_TESTE} />);
     const card = screen.getByTestId("placeholder-fidelidade");
     expect(card).toHaveAttribute("data-spec", "SPEC/2026-10-06-lp-eventos-fidelidade.md");
   });
 
   it("omite seções que já não possuem placeholder (já implementadas)", () => {
-    const parciais: PlaceholderSecao[] = PLACEHOLDERS_SECOES.filter((p) => p.secaoId !== "eventos");
+    const parciais: PlaceholderSecao[] = PLACEHOLDERS_TESTE.filter((p) => p.secaoId !== "instagram");
     const { container } = render(<LandingSecoesPlaceholder placeholders={parciais} />);
-    expect(container.querySelector("#eventos")).toBeNull();
+    expect(container.querySelector("#instagram")).toBeNull();
     expect(container.querySelector("#fidelidade")).not.toBeNull();
   });
 
   it("alterna o fundo destacado entre seções consecutivas", () => {
-    const { container } = render(<LandingSecoesPlaceholder />);
+    const { container } = render(<LandingSecoesPlaceholder placeholders={PLACEHOLDERS_TESTE} />);
     const secoes = Array.from(container.querySelectorAll("section"));
     expect(secoes[0].className).toContain("bg-slate-900/30");
     expect(secoes[1].className).not.toContain("bg-slate-900/30");
@@ -77,7 +83,10 @@ describe("CabecalhoReserva - Componente", () => {
 
   it("renderiza a seção já implementada na posição do menu, no lugar do placeholder", () => {
     const { container } = render(
-      <LandingSecoesPlaceholder implementadas={{ eventos: <section id="eventos">Eventos reais</section> }} />
+      <LandingSecoesPlaceholder
+        placeholders={PLACEHOLDERS_TESTE}
+        implementadas={{ eventos: <section id="eventos">Eventos reais</section> }}
+      />
     );
     const ids = Array.from(container.querySelectorAll("section")).map((s) => s.id);
     expect(ids.indexOf("eventos")).toBe(ids.indexOf("fidelidade") + 1);
