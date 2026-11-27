@@ -19,6 +19,7 @@ import { SecaoEstrutura } from "@/components/landing/SecaoEstrutura";
 import { SecaoEscolinhas } from "@/components/landing/SecaoEscolinhas";
 import { SecaoEventos } from "@/components/landing/SecaoEventos";
 import { SecaoContato } from "@/components/landing/SecaoContato";
+import { SecaoFaq } from "@/components/landing/SecaoFaq";
 import { CabecalhoReserva, ID_TITULO_RESERVA } from "@/components/landing/CabecalhoReserva";
 import { BotaoVoltarAoTopo } from "@/components/landing/BotaoVoltarAoTopo";
 import { SmoothScrollProvider } from "@/components/landing/SmoothScrollProvider";
@@ -544,7 +545,11 @@ export function PortalCliente() {
 
         {/* ── Seções institucionais futuras (placeholders das próximas specs) ── */}
         <LandingSecoesPlaceholder
-          implementadas={{ [SECAO_IDS.EVENTOS]: <SecaoEventos />, [SECAO_IDS.CONTATO]: <SecaoContato /> }}
+          implementadas={{
+            [SECAO_IDS.EVENTOS]: <SecaoEventos />,
+            [SECAO_IDS.FAQ]: <SecaoFaq />,
+            [SECAO_IDS.CONTATO]: <SecaoContato />,
+          }}
         />
 
         {/* ── Rodapé ─────────────────────────────────────────────────── */}

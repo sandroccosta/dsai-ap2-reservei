@@ -155,13 +155,4 @@ export const PLACEHOLDERS_SECOES: readonly PlaceholderSecao[] = [
       "Botão \"Siga nosso Instagram\"",
     ],
   },
-  {
-    secaoId: SECAO_IDS.FAQ,
-    itensPlanejados: [
-      "Perguntas em formato sanfona (accordion)",
-      "Política de chuva e de cancelamento",
-      "Regras de vestimenta e calçados",
-      "Gestão das perguntas pelo Painel Admin",
-    ],
-  },
 ];

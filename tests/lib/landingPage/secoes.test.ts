@@ -58,6 +58,8 @@ describe("landingPage/secoes - placeholders", () => {
     expect(comPlaceholder).not.toContain(SECAO_IDS.EVENTOS);
     // Contato foi implementada (SPEC/2026-11-27-secao-contato-landing.md).
     expect(comPlaceholder).not.toContain(SECAO_IDS.CONTATO);
+    // FAQ foi implementada (SPEC/2026-11-27-faq-gerenciado-admin.md).
+    expect(comPlaceholder).not.toContain(SECAO_IDS.FAQ);
   });
 
   it("cada placeholder lista ao menos um item planejado, sem duplicidades", () => {
