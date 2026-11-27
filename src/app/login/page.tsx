@@ -5,7 +5,9 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { useUserAuth } from "@/hooks/useUserAuth";
-import { mascaraWhatsApp, TELEFONE_COMPLEXO } from "@/lib/constants";
+import { mascaraWhatsApp } from "@/lib/constants";
+import { useConfiguracoesComplexo } from "@/hooks/useConfiguracoesComplexo";
+import { montarLinkWhatsApp } from "@/lib/landingPage/navegacao";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -14,6 +16,7 @@ import { Phone, Lock, Eye, EyeOff, ArrowLeft, Loader2, Sparkles, HelpCircle } fr
 export default function LoginPage() {
   const router = useRouter();
   const { login, loading } = useUserAuth();
+  const { configuracoes } = useConfiguracoesComplexo();
 
   const [telefone, setTelefone] = useState("");
   const [senha, setSenha] = useState("");
@@ -154,7 +157,7 @@ export default function LoginPage() {
               <span>
                 Esqueceu sua senha? Envie uma mensagem para nosso{" "}
                 <a
-                  href={`https://wa.me/${TELEFONE_COMPLEXO.replace(/\D/g, "")}`}
+                  href={montarLinkWhatsApp(configuracoes.whatsapp) ?? undefined}
                   target="_blank"
                   rel="noreferrer"
                   className="text-emerald-400 underline font-medium hover:text-emerald-300"

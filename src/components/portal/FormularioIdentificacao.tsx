@@ -18,8 +18,8 @@ import {
   formatarDataExibicao,
   PERCENTUAL_SINAL,
   TOLERANCIA_CANCELAMENTO_HORAS,
-  ENDERECO_COMPLEXO,
 } from "@/lib/constants";
+import { useConfiguracoesComplexo } from "@/hooks/useConfiguracoesComplexo";
 import { ESPORTES, QUADRAS, type Esporte } from "@/lib/quadras";
 import {
   User,
@@ -102,6 +102,7 @@ export function FormularioIdentificacao({
   onToggleVouchers,
 }: Props) {
   const { user } = useUserAuth();
+  const { configuracoes } = useConfiguracoesComplexo();
   const [dados, setDados] = useState<DadosIdentificacao>(initialState);
   const [tipoPagamento, setTipoPagamento] = useState<"sinal" | "integral">("sinal");
   const [errors, setErrors] = useState<Partial<Record<keyof DadosIdentificacao, string>>>({});
@@ -348,7 +349,7 @@ export function FormularioIdentificacao({
                   <MapPin className="w-4 h-4 text-emerald-400 mt-0.5 flex-shrink-0" />
                   <div>
                     <p className="text-xs text-slate-500">Local</p>
-                    <p className="text-slate-200 font-medium">{ENDERECO_COMPLEXO}</p>
+                    <p className="text-slate-200 font-medium">{configuracoes.endereco}</p>
                   </div>
                 </div>
 

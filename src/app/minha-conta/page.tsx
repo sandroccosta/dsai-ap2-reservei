@@ -10,9 +10,8 @@ import {
   formatarDataExibicao,
   formatarMoeda,
   getHoje,
-  TELEFONE_COMPLEXO,
-  NOME_COMPLEXO,
 } from "@/lib/constants";
+import { useConfiguracoesComplexo } from "@/hooks/useConfiguracoesComplexo";
 import { QUADRAS } from "@/lib/quadras";
 import {
   avaliarCancelamentoOnline,
@@ -60,6 +59,7 @@ export default function MinhaContaPage() {
   const router = useRouter();
   const { user, loading, logout, atualizarPerfil, excluirConta } = useUserAuth();
   const { reservas, cancelarReserva } = useReservasService();
+  const { configuracoes } = useConfiguracoesComplexo();
   const { getTotalNovosInteressados } = useVagasService();
   const { progresso, carregando: carregandoFidelidade, resgatarVoucher } = useFidelidadeService();
   const [reservaGerenciarVagas, setReservaGerenciarVagas] = useState<Reserva | null>(null);
@@ -411,7 +411,7 @@ export default function MinhaContaPage() {
                     const cancelamento = avaliarCancelamentoOnline(reserva, new Date());
                     const linkSuporteCancelamento = cancelamento.permitido
                       ? null
-                      : montarLinkWhatsApp(TELEFONE_COMPLEXO, mensagemCancelamentoWhatsApp(reserva));
+                      : montarLinkWhatsApp(configuracoes.whatsapp, mensagemCancelamentoWhatsApp(reserva));
                     return (
                       <div
                         key={reserva.id}
@@ -432,7 +432,7 @@ export default function MinhaContaPage() {
                               <a
                                 href={
                                   montarLinkWhatsApp(
-                                    TELEFONE_COMPLEXO,
+                                    configuracoes.whatsapp,
                                     `Olá, tenho uma dúvida sobre minha reserva no dia ${reserva.data} (Quadra ${quadra?.numero})`
                                   ) ?? undefined
                                 }
@@ -745,18 +745,23 @@ export default function MinhaContaPage() {
               <div className="p-4 rounded-2xl bg-slate-800/40 border border-slate-800 space-y-3 text-xs mb-6">
                 <div>
                   <span className="text-slate-500 block text-[10px] uppercase font-bold">Complexo</span>
-                  <p className="text-sm font-semibold text-white">{NOME_COMPLEXO}</p>
+                  <p className="text-sm font-semibold text-white">{configuracoes.nomeComplexo}</p>
                 </div>
                 <div>
                   <span className="text-slate-500 block text-[10px] uppercase font-bold">
                     WhatsApp de Atendimento
                   </span>
-                  <p className="text-sm font-semibold text-emerald-400">{TELEFONE_COMPLEXO}</p>
+                  <p className="text-sm font-semibold text-emerald-400">{configuracoes.telefone}</p>
                 </div>
               </div>
 
               <a
-                href={`https://wa.me/${TELEFONE_COMPLEXO.replace(/\D/g, "")}?text=Olá,%20sou%20${encodeURIComponent(user.nome)}%20e%20gostaria%20de%20tirar%20uma%20dúvida.`}
+                href={
+                  montarLinkWhatsApp(
+                    configuracoes.whatsapp,
+                    `Olá, sou ${user.nome} e gostaria de tirar uma dúvida.`
+                  ) ?? undefined
+                }
                 target="_blank"
                 rel="noreferrer"
                 className="block"
