@@ -53,7 +53,8 @@ describe("landingPage/secoes - placeholders", () => {
     expect(comPlaceholder).not.toContain(SECAO_IDS.INICIO);
     expect(comPlaceholder).not.toContain(SECAO_IDS.ESTRUTURA);
     expect(comPlaceholder).not.toContain(SECAO_IDS.ESCOLINHAS);
-    expect(comPlaceholder).toContain(SECAO_IDS.FIDELIDADE);
+    // Fidelidade foi implementada (SPEC/2026-11-27-secao-fidelidade-landing.md).
+    expect(comPlaceholder).not.toContain(SECAO_IDS.FIDELIDADE);
     // Eventos foi implementada (SPEC/2026-11-27-eventos-e-torneios.md).
     expect(comPlaceholder).not.toContain(SECAO_IDS.EVENTOS);
     // Contato foi implementada (SPEC/2026-11-27-secao-contato-landing.md).

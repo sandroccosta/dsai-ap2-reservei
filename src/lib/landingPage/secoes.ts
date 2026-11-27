@@ -133,14 +133,6 @@ export const SECOES_LANDING_PAGE: readonly SecaoLandingPage[] = [
  */
 export const PLACEHOLDERS_SECOES: readonly PlaceholderSecao[] = [
   {
-    secaoId: SECAO_IDS.FIDELIDADE,
-    itensPlanejados: [
-      "Passo a passo de \"Como Funciona\" o acúmulo de pontos",
-      "Exemplos de recompensas reais disponíveis",
-      "CTA \"Crie sua Conta e Comece a Pontuar\"",
-    ],
-  },
-  {
     secaoId: SECAO_IDS.INSTAGRAM,
     itensPlanejados: [
       "Grid com os posts e reels mais recentes",
