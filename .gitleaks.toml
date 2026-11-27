@@ -20,25 +20,23 @@ commits = [
   "3d55f8fd696708be69c171d606cdbc5bbd6bdcbb",
 ]
 
-# Falso positivo nas sessões salvas do Claude Code: cada requisição registra a
-# lista pública de recursos beta da API ("claude-code-20250219",
-# "oauth-2025-04-20", "interleaved-thinking-2025-05-14"...). A regra
-# generic-api-key lê "oauth" como nome de chave e o item seguinte como valor.
-# A exceção exige as duas condições: arquivo de sessão E valor no formato
-# nome-AAAA-MM-DD. Qualquer outro segredo nas sessões continua sendo acusado.
-[[allowlists]]
-description = "Nomes públicos de recursos beta da API nas sessões do Claude Code"
-condition = "AND"
-paths = ['''^prompts/sessoes/.+\.jsonl$''']
-regexes = ['''^[a-z]+(-[a-z]+)*-20\d{2}-\d{2}-\d{2}$''']
+# Falsos positivos nas sessões salvas do Claude Code (prompts/sessoes/*.jsonl).
+# As exceções NÃO usam `paths`: no gitleaks 8.30 uma exceção com `paths` ignora o
+# arquivo inteiro, e um segredo de verdade colado numa sessão passaria. Cada uma
+# vale só para o formato exato do valor, em qualquer arquivo.
 
-# Mesmo caso: cada turno salvo tem "turnAttributionKey", um UUID aleatório que o
-# Claude Code usa para identificar o turno (não é credencial). A regra
-# generic-api-key acusa pelo "Key" no nome do campo. A exceção vale só nos
-# arquivos de sessão e só quando o trecho acusado é esse campo com um UUID.
+# Cada requisição registra a lista pública de recursos beta da API
+# ("oauth-2025-04-20","interleaved-thinking-2025-05-14"...). A regra
+# generic-api-key lê "auth"/"token" no item anterior como nome de chave.
+# Valor só com palavras minúsculas e uma data no fim nunca é credencial.
+[[allowlists]]
+description = "Nomes públicos de recursos beta da API (nome-AAAA-MM-DD)"
+regexes = ['''^[a-z]+(?:-[a-z]+)*-20\d{2}-\d{2}-\d{2}$''']
+
+# Cada turno salvo tem "turnAttributionKey", um UUID aleatório que identifica o
+# turno (não é credencial). A regra acusa pelo "Key" no nome do campo. A
+# exceção olha o trecho inteiro: só esse campo seguido de um UUID.
 [[allowlists]]
 description = "Identificador de turno (UUID) nas sessões do Claude Code"
-condition = "AND"
-paths = ['''^prompts/sessoes/.+\.jsonl$''']
 regexTarget = "match"
 regexes = ['''turnAttributionKey"\s*:\s*"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"''']
