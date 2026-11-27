@@ -164,12 +164,4 @@ export const PLACEHOLDERS_SECOES: readonly PlaceholderSecao[] = [
       "Gestão das perguntas pelo Painel Admin",
     ],
   },
-  {
-    secaoId: SECAO_IDS.CONTATO,
-    itensPlanejados: [
-      "Mapa interativo do Google Maps",
-      "Horários de funcionamento sincronizados com o sistema",
-      "Atalhos para WhatsApp, telefone e e-mail",
-    ],
-  },
 ];
