@@ -22,6 +22,7 @@ import {
   Trophy,
   Images,
   Settings,
+  HelpCircle,
 } from "lucide-react";
 
 export type AdminView =
@@ -34,7 +35,8 @@ export type AdminView =
   | "fidelidade"
   | "financeiro"
   | "configuracoes"
-  | "eventos";
+  | "eventos"
+  | "faq";
 
 interface NavItem {
   id: AdminView;
@@ -52,6 +54,7 @@ const NAV_ITEMS: NavItem[] = [
   { id: "fidelidade", label: "Fidelidade", icon: Gift },
   { id: "eventos", label: "Eventos", icon: Trophy },
   { id: "financeiro", label: "Financeiro", icon: DollarSign },
+  { id: "faq", label: "Perguntas Frequentes", icon: HelpCircle },
   { id: "configuracoes", label: "Configurações", icon: Settings },
 ];
 
